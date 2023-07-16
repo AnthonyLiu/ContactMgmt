@@ -1,6 +1,4 @@
 import winston from "winston";
-// To Log on mongoDB database use :
-// require("winston-mongodb");
 require("express-async-errors");
 
 export function initLogger() {
@@ -17,9 +15,4 @@ export function initLogger() {
   winston.add(new winston.transports.File({ filename: "logfile.log" }));
   winston.add(new winston.transports.Console());
 
-  // Log on the MongoDB database
-  winston.add(new winston.transports.MongoDB, {
-    db: process.env.MONGO_URI,
-    level: "info",
-  });
 }
