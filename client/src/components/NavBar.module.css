@@ -1,0 +1,9 @@
+.navItem {
+  width: 10%;
+  max-width: 200px;
+  clear: both;
+  display: inline-block;
+  margin: 10px;
+  text-align: center;
+  padding: 10px;
+}

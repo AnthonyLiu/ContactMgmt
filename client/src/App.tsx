@@ -14,6 +14,7 @@ import {
 import { ProtectedRoute, NavBar } from "./components";
 import { useAppDispatch } from "./store/hooks";
 import { AuthRoute } from "./components/AuthRoute";
+import styles from "./App.module.css";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -32,7 +33,7 @@ function App() {
   return loading ? (
     <p>Loading, API cold start</p>
   ) : (
-    <>
+    <div className={styles.appContainer}>
       <NavBar />
       <Routes>
         <Route path='/healthcheck' element={<HealthPage />} />
@@ -73,7 +74,7 @@ function App() {
         <Route path='/' element={<Navigate to='/home' replace />} />
         <Route element={<Navigate to='/home' replace />} />
       </Routes>
-    </>
+    </div>
   );
 }
 
