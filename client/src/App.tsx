@@ -1,25 +1,79 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { useState, useEffect } from "react";
+import { Route, Navigate, Routes } from "react-router-dom";
+import { attemptGetUser } from "./store/thunks/user";
+
+import {
+  HomePage,
+  ProfilePage,
+  LoginPage,
+  LogoutPage,
+  RegisterPage,
+  HealthPage,
+} from "./pages";
+import { ProtectedRoute, NavBar } from "./components";
+import { useAppDispatch } from "./store/hooks";
+import { AuthRoute } from "./components/AuthRoute";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(attemptGetUser())
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  }, [dispatch]);
+
+  return loading ? (
+    <p>Loading, API cold start</p>
+  ) : (
+    <>
+      <NavBar />
+      <Routes>
+        <Route path='/healthcheck' element={<HealthPage />} />
+        <Route path='/home' element={<HomePage />} />
+
+        <Route
+          path='/register'
+          element={
+            <AuthRoute>
+              <RegisterPage />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='/login'
+          element={
+            <AuthRoute>
+              <LoginPage />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='/logout'
+          element={
+            <ProtectedRoute>
+              <LogoutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/my-profile'
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path='/' element={<Navigate to='/home' replace />} />
+        <Route element={<Navigate to='/home' replace />} />
+      </Routes>
+    </>
   );
 }
 
