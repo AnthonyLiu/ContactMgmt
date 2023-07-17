@@ -48,8 +48,6 @@ export default function ProfilePage() {
     user!.contacts = rows;
     dispatch(attemptUpdateUser(user!))
       .then(() => {
-        console.log(`rows: ${JSON.stringify(rows)}`)
-        console.log(`user: ${JSON.stringify(user)}`)
       })
       .catch(() => {
       });
