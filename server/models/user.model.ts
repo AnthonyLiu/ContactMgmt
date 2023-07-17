@@ -3,18 +3,48 @@ import { omit } from "ramda";
 import bcrypt from "bcryptjs";
 import dayjs from "dayjs";
 
+export interface Contact {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
 export interface UserDocument extends Document {
   username: string;
   email: string;
   password: string;
-  passwordResetToken: string;
-  passwordResetExpires: Date;
   expires?: Date;
+  contacts?: Contact[];
 
   comparePassword(password: string): boolean;
   hidePassword(): void;
   hashPassword(): Promise<string>;
 }
+
+/**
+ * Design the contact as a sub-document of user
+ */
+const contactSchema = new Schema<Contact>({
+  firstName: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 50,
+  },
+  lastName: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 50,
+  },
+  email: {
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 255,
+    unique: true,
+  },
+});
 
 const userSchema = new Schema<UserDocument>({
   username: {
@@ -36,9 +66,8 @@ const userSchema = new Schema<UserDocument>({
     minlength: 5,
     maxlength: 1024,
   },
-  passwordResetToken: { type: String, default: "" },
-  passwordResetExpires: { type: Date, default: dayjs().toDate() },
   expires: { type: Date, default: dayjs().toDate(), expires: 43200 },
+  contacts: [contactSchema],
 });
 
 userSchema.methods.comparePassword = function (password: string) {

@@ -6,6 +6,7 @@ import { validateRegisterInput } from "@validations/user.validation";
 import UserService from "@services/user.service";
 import TokenService from "@services/token.service";
 import LoggerService from "@services/logger.service";
+import { Contact } from "@models/user.model";
 
 export const getUser = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
@@ -21,7 +22,7 @@ export const postUser = async (req: Request, res: Response) => {
   const { error } = validateRegisterInput(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
 
-  let sanitizedInput = sanitize<{ username: string; password: string; email: string }>(req.body);
+  let sanitizedInput = sanitize<{ username: string; password: string; email: string; contacts: Contact[] }>(req.body);
 
   try {
     let user = await UserService.findUserBy("username", sanitizedInput.username.toLowerCase());
