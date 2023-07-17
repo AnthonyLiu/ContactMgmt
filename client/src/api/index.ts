@@ -10,9 +10,12 @@ const postUser = (user: User) => http.post<void>("/user/register", user);
 
 const getUser = () => http.get<{ user: User }>("/user");
 
+const updateUser = (user: User) => http.post<void>("/user/update", user);
+
 export {
   postLogin,
   postLogout,
   postUser,
   getUser,
+  updateUser,
 };

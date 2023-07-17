@@ -1,7 +1,7 @@
 import { useAppSelector } from "src/store/hooks";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../store/hooks";
-import { attemptGetUser } from "../../store/thunks/user";
+import { attemptGetUser, attemptUpdateUser } from "../../store/thunks/user";
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -35,15 +35,26 @@ export default function ProfilePage() {
   useEffect(() => {
     dispatch(attemptGetUser())
       .then(() => {
-        // console.log(user?.contacts)
       })
       .catch((error) => {
       });
   }, [dispatch]);
 
 
-  const [rows, setRows] = useState((user?.contacts ?? []) as any);
+  const [rows, setRows] = useState(((user?.contacts ?? []) as any).map((c: any) => ({ id: randomId(), ...c })));
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+
+  useEffect(() => {
+    user!.contacts = rows;
+    dispatch(attemptUpdateUser(user!))
+      .then(() => {
+        console.log(`rows: ${JSON.stringify(rows)}`)
+        console.log(`user: ${JSON.stringify(user)}`)
+      })
+      .catch(() => {
+      });
+  }, [rows]);
+
 
   const columns: GridColDef[] = [
     { field: 'firstName', headerName: 'First Name', width: 300, editable: true },
@@ -108,7 +119,7 @@ export default function ProfilePage() {
 
     const handleClick = () => {
       const id = randomId();
-      setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
+      setRows((oldRows) => [...oldRows, { id, firstName: '', lastName: '', email: '', isNew: true }]);
       setRowModesModel((oldModel) => ({
         ...oldModel,
         [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -118,7 +129,7 @@ export default function ProfilePage() {
     return (
       <GridToolbarContainer>
         <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-          Add record
+          Add Contact
         </Button>
       </GridToolbarContainer>
     );

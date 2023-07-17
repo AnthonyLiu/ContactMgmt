@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
-import { getUser } from "../../api/index";
-import { setUser, resetUser } from "../actions/user";
+import { getUser, updateUser } from "../../api/index";
+import { setUser, resetUser, User } from "../actions/user";
 
 export const attemptGetUser = () => (dispatch: Dispatch) =>
   getUser()
@@ -14,3 +14,5 @@ export const attemptGetUser = () => (dispatch: Dispatch) =>
     .catch(() => {
       dispatch(resetUser());
     });
+
+export const attemptUpdateUser = (user: User) => () => updateUser(user);
