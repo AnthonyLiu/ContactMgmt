@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 import sanitize from "mongo-sanitize";
 import { validateRegisterInput } from "@validations/user.validation";
@@ -7,10 +7,13 @@ import UserService from "@services/user.service";
 import TokenService from "@services/token.service";
 import LoggerService from "@services/logger.service";
 
-export const getUser = (req: Request, res: Response) => {
-  const user = req.user;
-
-  res.status(200).send({ message: "User info successfully retreived", user });
+export const getUser = (req: Request, res: Response, next: NextFunction) => {
+  if (req.isAuthenticated()) {
+    const user = req.user;
+    res.status(200).send({ message: "User info successfully retrieved", user });
+  } else {
+    return res.status(400).send({ message: "Unauthenticated request!"});
+  }
 };
 
 export const postUser = async (req: Request, res: Response) => {
