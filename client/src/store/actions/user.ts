@@ -3,10 +3,17 @@ export const LOGOUT_USER = "LOGOUT_USER";
 export const SET_USER = "SET_USER";
 export const RESET_USER = "RESET_USER";
 
+export interface Contact {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
 export type User = {
   username: string;
   email: string;
   password: string;
+  contacts?: Contact[]
 };
 
 export type Credentials = {
